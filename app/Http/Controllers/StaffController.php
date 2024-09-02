@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\EmployeeManagement\Staff;
+use App\Services\EmployeeManagement\EmployeeInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class StaffController extends Controller
 {
-    public function __construct(private readonly Staff $staff)
+    private EmployeeInterface $staff;
+
+    public function __construct(EmployeeInterface $staff)
     {
+        $this->staff = $staff;
     }
     
     public function payroll()
@@ -15,7 +19,9 @@ class StaffController extends Controller
         $data = $this->staff->salary();
     
         return response()->json([
-            'data' => $data
-        ]);
+            'status' => 'success',
+            'data' => $data,
+            'message' => 'Salary calculation successful',
+        ],  Response::HTTP_OK);
     }
 }

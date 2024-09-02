@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\EmployeeManagement\Applicant;
+use App\Services\EmployeeManagement\NonEmployeeInterface;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class JobController extends Controller
 {
-    public function __construct(private readonly Applicant $applicant)
+    private NonEmployeeInterface $applicant;
+
+    public function __construct(NonEmployeeInterface $applicant)
     {
+        $this->applicant = $applicant;
     }
     
     public function apply(Request $request)
@@ -16,7 +20,9 @@ class JobController extends Controller
         $data = $this->applicant->applyJob();
         
         return response()->json([
-            'data' => $data
-        ]);
+            'status' => 'success',
+            'data' => $data,
+            'message' => 'Job application successful',
+        ], Response::HTTP_OK);
     }
 }
