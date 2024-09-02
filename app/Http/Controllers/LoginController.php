@@ -26,8 +26,8 @@ class LoginController extends Controller
             return ResponseFormat::error($validator->errors(), "Fields validation error", 400);
         }
 
-        if (Auth::guard('ctj-api')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::guard('ctj-api')->user();
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
+            $user = Auth::user(); 
             $success['id'] =  $user->id;
             $success['name'] =  $user->name;
             $success['token'] =  $user->createToken('authToken')->plainTextToken; 
@@ -37,4 +37,34 @@ class LoginController extends Controller
             return ResponseFormat::error(null,'Please re-check your email & password', 400);
         }
     }
+
+
+
+    // public function login(LoginRequest $request)
+    // {
+    //     try {
+    //         $user = User::where('email', $request->validated('email'))->firstOrFail();
+
+    //         if (!Auth::attempt($request->validated())) {
+    //             throw new AuthenticationException('Invalid credentials');
+    //         }
+
+    //         return LoginResource::make($user);
+    //     } catch (AuthenticationException $e) {
+    //         return response()->json([
+    //             'status'  => Response::HTTP_UNAUTHORIZED,
+    //             'message' => $e->getMessage(),
+    //         ], Response::HTTP_UNAUTHORIZED);
+    //     } catch (ModelNotFoundException $e) {
+    //         return response()->json([
+    //             'status'  => Response::HTTP_NOT_FOUND,
+    //             'message' => 'Model not found.',
+    //         ], Response::HTTP_NOT_FOUND);
+    //     } catch (\Throwable $e) {
+    //         return response()->json([
+    //             'status'  => Response::HTTP_INTERNAL_SERVER_ERROR,
+    //             'message' => 'Internal server error.',
+    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 }
