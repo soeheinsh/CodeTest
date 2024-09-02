@@ -7,19 +7,29 @@ use App\Exceptions\UserLikeOwnPostException;
 use App\Http\Requests\PostToggleReactionRequest;
 use App\Http\Resources\PostCollection;
 use App\Models\Post;
+use App\ResponseFormat;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
-
+use Illuminate\Http\Request;
 class PostController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
-        $posts = Post::withCount('likes')->with('tags')->paginate();
+        $page = $request->query('page', 1);
+        $perPage = $request->query('per_page', 1); 
 
-        return new PostCollection($posts);
+        $query = Post::orderBy('id', 'desc');
+
+        $totalItems = $query->count();
+        $cars = paginateData($query, $page, $perPage, $totalItems);
+        
+        $post_collection = new PostCollection($cars['data']);
+        $post_collection->additional(['meta' => $cars['meta']]);
+
+        return ResponseFormat::success($post_collection, 'Get all posts list successful', 200);
     }
 
     public function toggleReaction(PostToggleReactionRequest $request)
