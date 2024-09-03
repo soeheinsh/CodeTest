@@ -28,21 +28,19 @@ class LoginController extends Controller
 
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
-            $success['id'] =  $user->id;
-            $success['name'] =  $user->name;
-            $success['email'] = $user->email;
-            $success['token'] =  $user->createToken('authToken')->plainTextToken; 
-
+            $user['token'] =  $user->createToken('authToken')->plainTextToken; 
+            
             return response()->json([
-                            'status'  => 'success',
-                            'message' => 'Your login successful.',
-                            'data' => $success,
-                        ], Response::HTTP_OK);
+                'status'  => 'success',
+                'message' => 'Your login successful.',
+                'data' => new LoginResource($user),
+            ], Response::HTTP_OK);
+
         } else { 
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Please recheck your credentials.',
-            ], 401);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

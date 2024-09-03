@@ -50,7 +50,7 @@ class LoginApiTest extends TestCase
             'password' => 'adminpass1',
         ]);
 
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED)
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
                  ->assertJson([
                      'status' => 'error',
                      'message' => 'Please recheck your credentials.',
