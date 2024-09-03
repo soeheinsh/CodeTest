@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\LoginResource;
 use App\Models\User;
-use App\ResponseFormat;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +22,11 @@ class LoginController extends Controller
         ]);
 
         if($validator->fails()){
-            return ResponseFormat::error($validator->errors(), "Fields validation error", 400);
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Fields validation error.',
+                'data' => $validator->errors(),
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
