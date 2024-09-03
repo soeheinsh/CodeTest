@@ -30,41 +30,19 @@ class LoginController extends Controller
             $user = Auth::user(); 
             $success['id'] =  $user->id;
             $success['name'] =  $user->name;
+            $success['email'] = $user->email;
             $success['token'] =  $user->createToken('authToken')->plainTextToken; 
 
-            return ResponseFormat::success($success, 'Your login is successful.', 200);
+            return response()->json([
+                            'status'  => 'success',
+                            'message' => 'Your login successful.',
+                            'data' => $success,
+                        ], Response::HTTP_OK);
         } else { 
-            return ResponseFormat::error(null,'Please re-check your email & password', 400);
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Please recheck your credentials.',
+            ], 401);
         }
     }
-
-
-
-    // public function login(LoginRequest $request)
-    // {
-    //     try {
-    //         $user = User::where('email', $request->validated('email'))->firstOrFail();
-
-    //         if (!Auth::attempt($request->validated())) {
-    //             throw new AuthenticationException('Invalid credentials');
-    //         }
-
-    //         return LoginResource::make($user);
-    //     } catch (AuthenticationException $e) {
-    //         return response()->json([
-    //             'status'  => Response::HTTP_UNAUTHORIZED,
-    //             'message' => $e->getMessage(),
-    //         ], Response::HTTP_UNAUTHORIZED);
-    //     } catch (ModelNotFoundException $e) {
-    //         return response()->json([
-    //             'status'  => Response::HTTP_NOT_FOUND,
-    //             'message' => 'Model not found.',
-    //         ], Response::HTTP_NOT_FOUND);
-    //     } catch (\Throwable $e) {
-    //         return response()->json([
-    //             'status'  => Response::HTTP_INTERNAL_SERVER_ERROR,
-    //             'message' => 'Internal server error.',
-    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-    // }
 }
