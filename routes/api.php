@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('login', [LoginController::class, 'login'])->middleware('ctj-api');
+Route::post('login', [LoginController::class, 'login'])->name('login')->middleware('ctj-api');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('posts', [PostController::class, 'list']);
